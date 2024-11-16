@@ -11,6 +11,8 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,800,800i,900,900i" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <!-- Styles -->
     <link rel="stylesheet" href="{{ mix('app.css', 'vendor/nova') }}">
     <!-- Tool Styles -->
@@ -50,30 +52,109 @@
             <!-- Content -->
             <div class="content">
                 <div class="flex items-center relative shadow h-header bg-white z-20 px-view">
-                    <a v-if="@json(\Laravel\Nova\Nova::name() !== null)" href="{{ \Illuminate\Support\Facades\Config::get('nova.url') }}" class="no-underline dim font-bold text-90 mr-6">
-                        {{ \Laravel\Nova\Nova::name() }}
-                    </a>
-                    <a href="/admin-notifications" class="flex gap-2 no-underline text-90 hover:bg-30 p-3 items-center">
-                        @if(auth()->user()->unreadNotifications()->count())
-                        <span class="inline-block w-[25px] h-[25px] rounded-md bg-green-500 text-white text-center text-xs pt-1">{{auth()->user()->unreadNotifications()->count()}}</span>
-                        @endif
-                       Notifications
-                    </a>
+                <a v-if="@json(\Laravel\Nova\Nova::name() !== null)" href="{{ \Illuminate\Support\Facades\Config::get('nova.url') }}" class="no-underline dim font-bold text-90 mr-6">
+                    {{ \Laravel\Nova\Nova::name() }}
+                </a>
 
-                    {{-- @if (count(\Laravel\Nova\Nova::globallySearchableResources(request())) > 0)
-                        <global-search dusk="global-search-component"></global-search>
-                    @endif --}}
+                {{-- Container for Notification Icon and User --}}
+                <div class="flex items-center ml-auto space-x-4">
+                    {{-- Notification Icon with Dropdown --}}
+                    <div class="relative">
+                        <button id="notificationDropdownButton" class="relative flex items-center no-underline text-90 hover:bg-30 p-3 focus:outline-none" onclick="toggleDropdown('notificationDropdown')">
+                            <!-- Replaced SVG with Font Awesome bell icon -->
+                            <i class="fas fa-bell"></i>
+                            <span id="notificationCount" class="absolute top-0 right-0 inline-block w-4 h-4 rounded-full bg-green-500 text-white text-center text-xs leading-tight">
+                                {{ auth()->user()->unreadNotifications()->count() }}
+                            </span>
+                        </button>
 
-                    <dropdown class="ml-auto h-9 flex items-center dropdown-right">
+                        {{-- Notification Dropdown Panel --}}
+                        <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white border border-gray-200 shadow-lg rounded-lg">
+                            <div class="p-4 border-b">
+                                <h3 class="text-sm font-semibold">Notifications</h3>
+                            </div>
+                            <div id="notificationList" class="max-h-64 overflow-y-auto">
+                                @foreach(auth()->user()->unreadNotifications as $notification)
+                                    <div class="p-3 border-b hover:bg-gray-100">
+                                        <p class="text-xs text-gray-600">{{ $notification->created_at->diffForHumans() }}</p>
+                                        <p class="text-sm font-medium">{{ $notification->data['message'] ?? 'New notification' }}</p>
+
+                                        {{-- Display appointment details if available --}}
+                                        @if(isset($notification->data['appointment_details']))
+                                            <div class="mt-2 text-xs text-gray-700">
+                                                <p><strong>Date:</strong> {{ $notification->data['appointment_details']['date'] ?? 'N/A' }}</p>
+                                                <p><strong>Slot:</strong> {{ $notification->data['appointment_details']['slot'] ?? 'N/A' }}</p>
+                                                @if(isset($notification->data['appointment_details']['remarks']))
+                                                    <p><strong>Remarks:</strong> {{ $notification->data['appointment_details']['remarks'] }}</p>
+                                                @endif
+                                                <p><strong>Service:</strong> {{ $notification->data['appointment_details']['service'] ?? 'N/A' }}</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endforeach
+                                @if(auth()->user()->unreadNotifications->isEmpty())
+                                    <div class="p-3 text-center text-gray-500">
+                                        No new notifications
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- User Dropdown --}}
+                    <dropdown class="h-9 flex items-center dropdown-right">
                         @include('nova::partials.user')
                     </dropdown>
                 </div>
+            </div>
 
-                <div data-testid="content" class="px-view py-view mx-auto">
-                    @yield('content')
+            <script>
+                function toggleDropdown(id) {
+                    const dropdown = document.getElementById(id);
+                    dropdown.classList.toggle('hidden');
+                }
 
-                    @include('nova::partials.footer')
-                </div>
+                // Close the dropdown when clicking outside
+                document.addEventListener('click', function(event) {
+                    const notificationButton = document.getElementById('notificationDropdownButton');
+                    const dropdown = document.getElementById('notificationDropdown');
+                    if (!notificationButton.contains(event.target) && !dropdown.contains(event.target)) {
+                        dropdown.classList.add('hidden');
+                    }
+                });
+
+                // Real-time notification listener
+                document.addEventListener('DOMContentLoaded', function() {
+                console.log('Echo initialized');
+                const userId = {{ auth()->id() }};
+                window.Echo.private(`notifications.${userId}`)
+                    .listen('NewNotification', (e) => {
+                        console.log('New notification received:', e);
+                        const notificationList = document.getElementById('notificationList');
+                        const newNotification = document.createElement('div');
+                        newNotification.classList.add('p-3', 'border-b', 'hover:bg-gray-100');
+                        newNotification.innerHTML = `
+                            <p class="text-xs text-gray-600">${new Date().toLocaleString()}</p>
+                            <p class="text-sm font-medium">${e.notification.message}</p>
+                            ${e.notification.appointment_details ? `
+                            <div class="mt-2 text-xs text-gray-700">
+                                <p><strong>Date:</strong> ${e.notification.appointment_details.date}</p>
+                                <p><strong>Slot:</strong> ${e.notification.appointment_details.slot}</p>
+                                <p><strong>Remarks:</strong> ${e.notification.appointment_details.remarks ?? 'N/A'}</p>
+                                <p><strong>Service:</strong> ${e.notification.appointment_details.service}</p>
+                            </div>` : ''}
+                        `;
+                        notificationList.prepend(newNotification);
+                        const notificationCount = document.getElementById('notificationCount');
+                        notificationCount.textContent = parseInt(notificationCount.textContent) + 1;
+                    });
+            });
+            </script>
+
+            <div data-testid="content" class="px-view py-view mx-auto">
+                @yield('content')
+
+                @include('nova::partials.footer')
             </div>
         </div>
     </div>
@@ -81,7 +162,6 @@
     <script>
         window.config = @json(\Laravel\Nova\Nova::jsonVariables(request()));
     </script>
-
 
     <!-- Scripts -->
     <script src="{{ mix('manifest.js', 'vendor/nova') }}"></script>
