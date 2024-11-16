@@ -17,7 +17,7 @@ class AppointmentObserver
      */
     public function created(Appointment $appointment)
     {
-        $users = User::whereType('Administrator')->get();
+        $users = User::whereIn('type', ['Administrator', 'Staff'])->get();
         foreach ($users as $user) {
             $user->notify(new NewAppointment($appointment));
         }
