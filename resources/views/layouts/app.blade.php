@@ -165,9 +165,6 @@
                                 <a class="nav-link" href="/">{{ __('Home') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/notifications">{{ __('Notifications') }}</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" target="_blank" href="/dental-record/{{auth()->id()}}">{{ __('Dental Record') }}</a>
                             </li>
                             <li class="nav-item">
