@@ -6,23 +6,23 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
-
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 
-//artisan helper
+// Artisan helper (restricted to authenticated users for security)
 Route::get('/artisan', function () {
     $result = Artisan::call(request()->param);
     return $result;
-});
+})->middleware('auth');
 
 Auth::routes(['verify' => true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('verified');
-Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index']);
+Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->middleware('auth');
 Route::get('/reserve/{service}', function (Request $request, Service $service) {
     return view('reserve', compact('service'));
 })->middleware(['auth']);
@@ -73,17 +73,26 @@ Route::get('/faq', function (Request $request) {
     return view('faq');
 });
 
-
-Route::get('/admin-notifications', function (Request $request) {
+// Admin and User Notifications routes
+Route::get('/admin-notifications', function () {
     return view('admin_notification');
-});
+})->middleware('auth');
 
-Route::get('/notifications', function (Request $request) {
+Route::get('/notifications', function () {
     return view('user_notification');
-});
+})->middleware('auth');
+// Mark a single notification as read
+Route::post('/admin-notifications/{notification}', function ($notification) {
+    $userNotification = auth()->user()->notifications()->find($notification);
 
-Route::post('/admin-notifications/{notification}', function (Request $request, $notification) {
-    auth()->user()->notifications()->find($notification)->markAsRead();
+    if ($userNotification) {
+        $userNotification->markAsRead();
+    }
 
     return back();
-});
+})->middleware('auth');
+// Mark all notifications as read route
+Route::post('/notifications/mark-all-as-read', function () {
+    auth()->user()->unreadNotifications->markAsRead();
+    return back();
+})->name('notifications.markAllAsRead')->middleware('auth');
