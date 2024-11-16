@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Filters\PatientType;
 use Eminiarts\Tabs\Tab;
 use Eminiarts\Tabs\Tabs;
 use Laravel\Nova\Fields\ID;
@@ -21,11 +22,11 @@ use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
 class PatientRecord extends Resource
 {
 
-public static function indexQuery(NovaRequest $request, $query)
-{
-    return $query->whereType('Patient')
-                 ->orderBy('name', 'asc'); // Orders the results by the 'name' field in ascending order
-}
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        
+        return $query->where('type', 'Patient');
+    } 
 
 
     public function authorizedToDelete(Request $request)
@@ -78,10 +79,6 @@ public static function indexQuery(NovaRequest $request, $query)
                 ->sortable()
                 ->rules('required', 'max:255')
                 ->readonly($request->isUpdateOrUpdateAttachedRequest())
-                ->displayUsing(function ($name) {
-                    return '<strong>' . e($name) . '</strong>';
-                })
-                ->asHtml()
                 ->withMeta(['extraAttributes' => [
                     'placeholder' => 'Enter patient FULL NAME'
                 ]]),
@@ -95,15 +92,10 @@ public static function indexQuery(NovaRequest $request, $query)
 
             Text::make('Phone')
                 ->rules('required'),
-            Text::make('Address')
-                ->rules('required')
-                ->displayUsing(function ($address) {
-                    return '<span class="custom-address">' . e($address) . '</span>';
-                })
-                ->asHtml(),
-        
-        
 
+            Text::make('Address')
+                ->rules('required'),
+                
             Password::make('Password')
                 ->onlyOnForms()
                 ->creationRules('required', 'string', 'min:8')
@@ -156,7 +148,9 @@ public static function indexQuery(NovaRequest $request, $query)
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            new PatientType,
+        ];
     }
 
     /**

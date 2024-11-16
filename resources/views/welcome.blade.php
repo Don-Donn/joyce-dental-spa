@@ -28,9 +28,9 @@
     </div>
     
     <div class="container py-4">
-        <h1 class="display-4 text-center mb-2">Announcement Board</h1>
+        <h1 class="text-center mb-2">Clinic Announcement</h1>
         <div class="announcement-board-wrapper shadow-sm">
-            <div class="announcement-content">
+            <div class="announcement-content" style="font-size: 30px;">
                 <span class="text">
                     {{ nova_get_setting('announcement_board', 'No announcements at the moment.') }}
                 </span>

@@ -13,6 +13,7 @@ use Laravel\Nova\Fields\Textarea;
 use App\Nova\Actions\Download;
 use App\Nova\Actions\ChangeStatus;
 use App\Nova\Actions\SendReminder;
+use App\Nova\Filters\Slot;
 use App\Nova\Filters\Status;
 use Laraning\NovaTimeField\TimeField;
 use Laravel\Nova\Fields\BelongsTo;
@@ -133,6 +134,7 @@ class Appointment extends Resource
         return [
             Status::make(),
             \App\Nova\Filters\Date::make(),
+            new Slot,
         ];
     }
 

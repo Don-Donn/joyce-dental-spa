@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Filters\ServiceAlphabetical;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
@@ -77,7 +78,9 @@ class Service extends Resource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            new ServiceAlphabetical,
+        ];
     }
 
     /**

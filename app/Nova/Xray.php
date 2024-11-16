@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Filters\XrayPatient;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Date;
@@ -85,7 +86,7 @@ class Xray extends Resource
             Hidden::make('Type')->default(fn () => 'dental'),
             // Textarea::make('Radiologist Report')
             //     ->alwaysShow(),
-            Textarea::make('Result', 'findings')
+            Textarea::make('Findings', 'findings')
                 ->showOnIndex()
                 ->alwaysShow(),
             // Textarea::make('Diagnosis')
@@ -117,7 +118,9 @@ class Xray extends Resource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            new XrayPatient,
+        ];
     }
 
     /**
