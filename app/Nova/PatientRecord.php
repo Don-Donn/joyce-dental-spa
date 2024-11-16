@@ -21,10 +21,12 @@ use Maatwebsite\LaravelNovaExcel\Actions\DownloadExcel;
 class PatientRecord extends Resource
 {
 
-    public static function indexQuery(NovaRequest $request, $query)
-    {
-        return $query->whereType('Patient');
-    }
+public static function indexQuery(NovaRequest $request, $query)
+{
+    return $query->whereType('Patient')
+                 ->orderBy('name', 'asc'); // Orders the results by the 'name' field in ascending order
+}
+
 
     public function authorizedToDelete(Request $request)
     {
@@ -75,7 +77,15 @@ class PatientRecord extends Resource
             Text::make('Name')
                 ->sortable()
                 ->rules('required', 'max:255')
-                ->readonly($request->isUpdateOrUpdateAttachedRequest()),
+                ->readonly($request->isUpdateOrUpdateAttachedRequest())
+                ->displayUsing(function ($name) {
+                    return '<strong>' . e($name) . '</strong>';
+                })
+                ->asHtml()
+                ->withMeta(['extraAttributes' => [
+                    'placeholder' => 'Enter patient FULL NAME'
+                ]]),
+
 
             Text::make('Email')
                 ->sortable()
@@ -83,8 +93,16 @@ class PatientRecord extends Resource
                 ->creationRules('unique:users,email')
                 ->updateRules('unique:users,email,{{resourceId}}'),
 
-            Text::make('Phone'),
-            Text::make('Address'),
+            Text::make('Phone')
+                ->rules('required'),
+            Text::make('Address')
+                ->rules('required')
+                ->displayUsing(function ($address) {
+                    return '<span class="custom-address">' . e($address) . '</span>';
+                })
+                ->asHtml(),
+        
+        
 
             Password::make('Password')
                 ->onlyOnForms()
@@ -92,12 +110,16 @@ class PatientRecord extends Resource
                 ->updateRules('nullable', 'string', 'min:8'),
 
             Select::make('Gender')
+                ->rules('required')
+                ->hideFromIndex()
                 ->options([
                     'Male' => 'Male',
                     'Female' => 'Female',
                 ]),
 
-            Date::make('Birth Date', 'birthday'),
+            Date::make('Birth Date', 'birthday')
+                ->rules('required')
+                ->hideFromIndex(),
             (new Tabs('Records', [
                 new Tab('Appointments', [
                     HasMany::make('Appointments', 'appointments', Appointment::class)

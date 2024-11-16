@@ -98,6 +98,7 @@ class Appointment extends Resource
             Textarea::make('Remarks')
                 ->alwaysShow(),
             Select::make("Service")
+                ->rules('required')
                 ->options(Service::get()->pluck('name', 'name')),
             Badge::make('Status')
                 ->map([

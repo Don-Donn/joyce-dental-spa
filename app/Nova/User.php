@@ -67,6 +67,7 @@ class User extends Resource
     {
         return [
             Select::make('Account Type', 'type')
+                ->rules('required')
                 ->hideWhenUpdating()
                 ->options([
                     'Administrator' => 'Administrator',

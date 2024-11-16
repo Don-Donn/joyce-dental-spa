@@ -45,7 +45,7 @@
                         </h2>
                         <div id="collapseOne-{{$item->id}}" class="accordion-collapse collapse {{$loop->first ? 'show': ''}}" aria-labelledby="head-{{$item->id}}" data-bs-parent="#accordionExample">
                           <div class="accordion-body">
-                            {{$item->answer}}
+                              {!! nl2br(e($item->answer)) !!}
                           </div>
                         </div>
                       </div>
