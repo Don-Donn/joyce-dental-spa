@@ -39,7 +39,6 @@ class BotResponse extends Resource
      * @var array
      */
     public static $search = [
-        'category',
         'question',
         'answer',
     ];
@@ -53,8 +52,7 @@ class BotResponse extends Resource
     public function fields(Request $request)
     {
         return [
-            Text::make('Category'),
-            Select::make('Parent', 'parent_id')
+            Select::make('Follow-up From', 'parent_id')
                 ->options(ModelsBotResponse::get()->pluck('question', 'id'))->displayUsingLabels(),
             Textarea::make('Question')->alwaysShow(),
             Textarea::make('Answer')->alwaysShow(),

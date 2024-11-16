@@ -11,7 +11,6 @@ class BotResponse extends Model
 
     protected $fillable = [
         'parent_id',
-        'category',
         'question',
         'answer',
     ];
