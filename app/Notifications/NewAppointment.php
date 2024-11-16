@@ -59,7 +59,13 @@ class NewAppointment extends Notification
     public function toArray($notifiable)
     {
         return [
-            'message' => 'New Appointment has been created!',
+            'message' => 'A new appointment has been created for ' . $this->appointment->patient->name . '.',
+            'appointment_details' => [
+                'date' => $this->appointment->date->format('F j, Y'),
+                'slot' => $this->appointment->slot,
+                'remarks' => $this->appointment->remarks,
+                'service' => $this->appointment->service,
+            ],
             'status' => 'success',
             'appointment_id' => $this->appointment->id,
         ];
