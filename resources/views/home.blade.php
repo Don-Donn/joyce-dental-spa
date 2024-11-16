@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+<head>
+    <!-- Other head content -->
+    <link rel="stylesheet" href="{{ asset('css/dropdown.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
     <div class="container mt-4">
         <h1 class="my-4">
             Hello {{auth()->user()->name}}
@@ -61,23 +66,25 @@
                     </div>
                     <div class="card-body">
 
-                        <form action="/reserve" method="POST" class="text-left">
+                        <form id="appointmentForm" action="/reserve" method="POST" class="text-left">
                             @csrf
                             <input type="hidden" name="patient_id" value="{{auth()->id()}}">
                             <div class="form-group">
-                                <label for="">Service</label>
-                                <select class="form-control" name="service" >
+                            <label for="service">Service</label>
+                            <div class="dropdown-wrapper">
+                                <select class="form-control" name="service" required>
+                                    <option value="" disabled selected>Select a Service</option>
                                     @foreach (\App\Models\Service::get() as $item)
-                                        <option {{request()->service == $item->name ?  'selected': ''}} value="{{$item->name}}">{{$item->name}}</option>
+                                        <option {{ request()->service == $item->name ? 'selected' : '' }} value="{{ $item->name }}">{{ $item->name }}</option>
                                     @endforeach
-                                </select>
+                            </select>
                             </div>
                             <div class="form-group mt-4">
                                 <label for="">Date </label>
-                                <input type="date" v-model="date" name="date"  @change="loadSlots" min="{{date('Y-m-d')}}" class="form-control">
+                                <input type="date" v-model="date" name="date"  @change="loadSlots" min="{{date('Y-m-d')}}" class="form-control" required>
                             </div>
                             <div class="form-group mt-4">
-                                <label for="">Slot </label>
+                                <label for="">TimeSlot </label>
                                 <select class="form-control" name="slot">
                                     <option :value="slot" v-for="slot in slots" :key="slot">
                                         @{{slot}}
@@ -89,13 +96,41 @@
                                 <label for="">Notes</label>
                                 <textarea name="remarks" id="" class="form-control"></textarea>
                             </div>
-                            <button class="btn btn-primary mt-4">Send Request</button>
+                            <button type="button" class="btn btn-primary mt-4" onclick="validateAndConfirm()">Send Request</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        function validateAndConfirm() {
+            const form = document.getElementById("appointmentForm");
+            // Check if all required fields are filled
+            const isFormValid = form.checkValidity();
+            if (isFormValid) {
+                // Use SweetAlert2 for a styled confirmation popup
+                Swal.fire({
+                    title: 'Confirm Appointment',
+                    text: "Are you sure with your appointment details?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#7d5fff',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, Confirm',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();  // Submit the form if the user confirms
+                    }
+                });
+            } else {
+                // If not all fields are filled, show validation feedback
+                form.reportValidity();  // Shows default validation messages for required fields
+            }
+        }
+    </script>
 
     <script>
        new Vue({

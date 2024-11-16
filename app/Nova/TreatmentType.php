@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Filters\TreatmentTypeAlphabetical;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
@@ -68,7 +69,9 @@ class TreatmentType extends Resource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            new TreatmentTypeAlphabetical,
+        ];
     }
 
     /**
