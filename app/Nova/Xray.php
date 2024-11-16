@@ -19,6 +19,19 @@ class Xray extends Resource
     public static function label () {
         return "X-Rays";
     }
+
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        // Customize the search logic here
+        if ($request->get('search')) {
+            return $query->orWhereHas('patient', function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->get('search') . '%');
+            });
+        }
+
+        return $query;
+    }
+    
     /**
      * The model the resource corresponds to.
      *
@@ -31,7 +44,7 @@ class Xray extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'patient.name';
 
     /**
      * The columns that should be searched.
@@ -55,7 +68,18 @@ class Xray extends Resource
     {
         return [
             Date::make('Date')->sortable(),
-            BelongsTo::make('Patient', 'patient', PatientRecord::class,),
+            
+            $request->isUpdateOrUpdateAttachedRequest()
+            ? Text::make('Patient')
+                ->resolveUsing(function () {
+                    return $this->patient ? $this->patient->name : 'No patient assigned';
+                })
+                ->readonly()
+                ->sortable()
+            : BelongsTo::make('Patient', 'patient', PatientRecord::class)
+                ->rules('required')
+                ->sortable(), // Keep dropdown on create only
+
             Hidden::make('Type')->default(fn () => 'dental'),
             // Textarea::make('Radiologist Report')
             //     ->alwaysShow(),
@@ -67,7 +91,7 @@ class Xray extends Resource
             //     ->alwaysShow(),
             // Textarea::make('Follow Up')
             //     ->alwaysShow(),
-            Image::make('Image'),
+            Image::make('image')
         ];
     }
 
