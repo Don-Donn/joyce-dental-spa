@@ -87,8 +87,15 @@ class User extends Resource
 
             Password::make('Password')
                 ->onlyOnForms()
-                ->creationRules('required', 'string', 'min:8')
+                ->creationRules('required', 'string', 'min:8', 'confirmed')
                 ->updateRules('nullable', 'string', 'min:8'),
+                
+            Password::make('Confirm Password', 'password_confirmation')
+                ->onlyOnForms()
+                ->creationRules('required_with:password')
+                ->updateRules('nullable')
+                ->hideFromIndex()
+                ->fillUsing(function () {}), // Prevent saving to the database
         ];
     }
 
