@@ -72,9 +72,11 @@ class Record extends Resource
                 ->sortable(), // Keep dropdown on create only
 
             Textarea::make('Medical History')
+                ->rules('required')
                 ->showOnIndex()
                 ->alwaysShow(),
             Textarea::make('Allergies')
+                ->rules('required')
                 ->showOnIndex()
                 ->alwaysShow(),
             Select::make('Smoker')
@@ -82,6 +84,7 @@ class Record extends Resource
                     'Yes' => 'Yes',
                     'No' => 'No',
                 ])
+                ->default('No') 
                 ->displayUsingLabels()
                 ->showOnIndex(),
             Textarea::make('Notes')

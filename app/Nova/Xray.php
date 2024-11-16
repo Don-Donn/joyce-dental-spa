@@ -67,7 +67,9 @@ class Xray extends Resource
     public function fields(Request $request)
     {
         return [
-            Date::make('Date')->sortable(),
+            Date::make('Date')
+                ->rules('required')
+                ->sortable(),
             
             $request->isUpdateOrUpdateAttachedRequest()
             ? Text::make('Patient')
@@ -91,7 +93,8 @@ class Xray extends Resource
             //     ->alwaysShow(),
             // Textarea::make('Follow Up')
             //     ->alwaysShow(),
-            Image::make('image')
+            Image::make('Image')
+                ->rules('required'),
         ];
     }
 

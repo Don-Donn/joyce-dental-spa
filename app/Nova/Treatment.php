@@ -69,7 +69,9 @@ class Treatment extends Resource
     public function fields(Request $request)
     {
         return [
-            Date::make('Date', 'created_at')->sortable(),
+            Date::make('Date', 'created_at')
+                ->rules('required')
+                ->sortable(),
             
             $request->isUpdateOrUpdateAttachedRequest()
             ? Text::make('Patient')
@@ -83,6 +85,7 @@ class Treatment extends Resource
                 ->sortable(), // Keep dropdown on create only
 
             Multiselect::make('Type')
+                ->rules('required')
                 ->options(TreatmentType::get()->pluck('name', 'name')),
             Textarea::make('Description')
                 ->showOnIndex()

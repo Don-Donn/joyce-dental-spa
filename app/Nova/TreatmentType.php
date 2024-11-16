@@ -45,6 +45,7 @@ class TreatmentType extends Resource
     {
         return [
             Text::make('Name')
+                ->rules('required')
         ];
     }
 

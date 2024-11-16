@@ -54,8 +54,13 @@ class BotResponse extends Resource
         return [
             Select::make('Follow-up From', 'parent_id')
                 ->options(ModelsBotResponse::get()->pluck('question', 'id'))->displayUsingLabels(),
-            Textarea::make('Question')->alwaysShow(),
-            Textarea::make('Answer')->alwaysShow(),
+            Textarea::make('Question')
+                ->showOnIndex()
+                ->rules('required')
+                ->alwaysShow(),
+            Textarea::make('Answer')
+                ->rules('required')
+                ->alwaysShow(),
         ];
     }
 
