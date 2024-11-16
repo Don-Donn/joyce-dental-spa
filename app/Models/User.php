@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use Exception;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Crypt;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -49,40 +49,48 @@ class User extends Authenticatable implements MustVerifyEmail
         'birthday' => 'date',
     ];
 
-    public function records () {
+    public function records()
+    {
         return $this->hasOne(Record::class, 'patient_id');
     }
-    public function treatments () {
+    public function treatments()
+    {
         return $this->hasMany(Treatment::class, 'patient_id');
     }
-    public function xrays () {
+    public function xrays()
+    {
         return $this->hasMany(Xray::class, 'patient_id');
     }
-    public function appointments () {
+    public function appointments()
+    {
         return $this->hasMany(Appointment::class, 'patient_id');
     }
-    public function dentalRecord () {
-        return $this->hasOne(DentalRecord::class, 'user_id');
+    // Mutators to encrypt data when saving
+    public function setPhoneAttribute($value)
+    {
+        $this->attributes['phone'] = $value ? Crypt::encryptString($value) : null;
     }
-
-    public function hasFilled ($tn) {
-        $ss = $this->getStatus($tn);
-
-        return in_array("F", $ss);
+    public function setAddressAttribute($value)
+    {
+        $this->attributes['address'] = $value ? Crypt::encryptString($value) : null;
     }
-
-    public function getStatus ($tn) {
+    // Accessors to decrypt data when retrieving
+    public function getPhoneAttribute($value)
+    {
         try {
-            $statuses = $this->dentalRecord
-                ->statuses()
-                ->whereToothNumber($tn)
-                ->get()
-                ->pluck('status')
-                ->all();
-
-            return $statuses;
-        } catch (Exception $e) {
-            return $e;
+            return $value ? Crypt::decryptString($value) : null;
+        } catch (\Exception $e) {
+            \Log::error('Decryption error: ' . $e->getMessage());
+            return null;
+        }
+    }
+    public function getAddressAttribute($value)
+    {
+        try {
+            return $value ? Crypt::decryptString($value) : null;
+        } catch (\Exception $e) {
+            \Log::error('Decryption error: ' . $e->getMessage());
+            return null;
         }
     }
 }
