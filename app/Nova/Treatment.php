@@ -29,12 +29,23 @@ class Treatment extends Resource
      */
     public static $model = \App\Models\Treatment::class;
 
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        // Customize the search logic here
+        if ($request->get('search')) {
+            return $query->orWhereHas('patient', function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->get('search') . '%');
+            });
+        }
+
+        return $query;
+    }
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'description';
+    public static $title = 'patient.name';
 
     /**
      * The columns that should be searched.
@@ -43,6 +54,7 @@ class Treatment extends Resource
      */
     public static $search = [
         'id',
+        'type',
         'description',
         'dosage',
         'notes',
@@ -58,7 +70,18 @@ class Treatment extends Resource
     {
         return [
             Date::make('Date', 'created_at')->sortable(),
-            BelongsTo::make('Patient', 'patient', PatientRecord::class),
+            
+            $request->isUpdateOrUpdateAttachedRequest()
+            ? Text::make('Patient')
+                ->resolveUsing(function () {
+                    return $this->patient ? $this->patient->name : 'No patient assigned';
+                })
+                ->readonly()
+                ->sortable()
+            : BelongsTo::make('Patient', 'patient', PatientRecord::class)
+                ->rules('required')
+                ->sortable(), // Keep dropdown on create only
+
             Multiselect::make('Type')
                 ->options(TreatmentType::get()->pluck('name', 'name')),
             Textarea::make('Description')

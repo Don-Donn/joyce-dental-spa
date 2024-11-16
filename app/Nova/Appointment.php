@@ -10,10 +10,10 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Badge;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Textarea;
+use App\Nova\Actions\Download;
 use App\Nova\Actions\ChangeStatus;
 use App\Nova\Actions\SendReminder;
 use App\Nova\Filters\Status;
-use App\Rules\ConflictAppointment;
 use Laraning\NovaTimeField\TimeField;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -51,9 +51,7 @@ class Appointment extends Resource
      * @var string
      */
 
-    public function title () {
-        return $this->date->format('m/d/y');
-    }
+     public static $title = 'patient.name';
 
     /**
      * The columns that should be searched.
@@ -80,9 +78,20 @@ class Appointment extends Resource
                 ->rules(['required', 'date', 'after_or_equal:today'])
                 ->required()
                 ->sortable(),
-            BelongsTo::make('Patient', 'patient', PatientRecord::class),
+
+                $request->isUpdateOrUpdateAttachedRequest()
+                ? Text::make('Patient')
+                    ->resolveUsing(function () {
+                        return $this->patient ? $this->patient->name : 'No patient assigned';
+                    })
+                    ->readonly()
+                    ->sortable()
+                : BelongsTo::make('Patient', 'patient', PatientRecord::class)
+                    ->rules('required')
+                    ->sortable(), // Keep dropdown on create only
+
             Select::make('Slot')
-                ->rules(['required', new ConflictAppointment($request->date ?? $this->date)])
+                ->rules(['required'])
                 ->options(\App\Models\Appointment::getSlots()),
             // TimeField::make('Start Time', 'time_start')->withTwelveHourTime()->required(),
             // TimeField::make('End Time', 'time_end')->withTwelveHourTime()->required(),

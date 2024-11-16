@@ -11,20 +11,12 @@ class Record extends Model
 
     protected $fillable = [
         'patient_id',
-        'condition',
-        'diagnosis_date',
+        'medical_history',
         'allergies',
-        'family_history',
-        'prev_hospitalization',
-        'doctor',
-        'last_visit_date',
+        'smoker',
         'notes',
     ];
 
-    protected $casts = [
-        'last_visit_date' => 'date',
-        'diagnosis_date' => 'date',
-    ];
 
     public function patient () {
         return $this->belongsTo(User::class, 'patient_id');

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -35,7 +36,7 @@ class Record extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'patient.name';
 
     /**
      * The columns that should be searched.
@@ -44,8 +45,10 @@ class Record extends Resource
      */
     public static $search = [
         'id',
-        'condition',
-        'doctor',
+        'medical_history',
+        'smoker',
+        'allergies',
+        'notes',
     ];
 
     /**
@@ -57,29 +60,36 @@ class Record extends Resource
     public function fields(Request $request)
     {
         return [
-            Date::make('Diagnosis Date')
-                ->hideFromIndex()
-                ->sortable(),
-            Date::make('Last Visit Date')
-                ->hideFromIndex()
-                ->sortable(),
-            BelongsTo::make('Patient', 'patient', PatientRecord::class),
-            Text::make('Condition'),
+            $request->isUpdateOrUpdateAttachedRequest()
+            ? Text::make('Patient')
+                ->resolveUsing(function () {
+                    return $this->patient ? $this->patient->name : 'No patient assigned';
+                })
+                ->readonly()
+                ->sortable()
+            : BelongsTo::make('Patient', 'patient', PatientRecord::class)
+                ->rules('required')
+                ->sortable(), // Keep dropdown on create only
+
+            Textarea::make('Medical History')
+                ->showOnIndex()
+                ->alwaysShow(),
             Textarea::make('Allergies')
                 ->showOnIndex()
                 ->alwaysShow(),
-            Textarea::make('Family history')
-                ->alwaysShow(),
-            Textarea::make('Previous Hospitalization', 'prev_hospitalization')
-                ->alwaysShow(),
-            Text::make('Dentist', 'doctor')
-                ->hideFromIndex()
-                ->default(fn () => auth()->user()->name),
+            Select::make('Smoker')
+                ->options([
+                    'Yes' => 'Yes',
+                    'No' => 'No',
+                ])
+                ->displayUsingLabels()
+                ->showOnIndex(),
             Textarea::make('Notes')
                 ->showOnIndex()
                 ->alwaysShow(),
         ];
     }
+    
 
     /**
      * Get the cards available for the request.
