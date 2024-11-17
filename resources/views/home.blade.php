@@ -43,13 +43,33 @@
                                 </div>
                                 @if ($item->status == 'Approved')
                                     <div class="card-footer">
-                                        <form action="/cancel" method="POST" class="d-flex justify-content-end">
-                                            @csrf
-                                            <input type="hidden" name="appointment_id" value="{{$item->id}}" />
-                                            <button class="btn btn-danger">CANCEL</button>
-                                        </form>
+                                        <button class="btn btn-danger" onclick="confirmCancellation({{$item->id}})">CANCEL</button>
                                     </div>
+
+                                    <form id="cancel-form-{{$item->id}}" action="/cancel" method="POST" style="display: none;">
+                                        @csrf
+                                        <input type="hidden" name="appointment_id" value="{{$item->id}}">
+                                    </form>
                                 @endif
+
+                                <script>
+                                    function confirmCancellation(appointmentId) {
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: 'Confirm Cancellation',
+                                            text: 'Are you sure you want to cancel this appointment?',
+                                            showCancelButton: true,
+                                            confirmButtonText: 'Yes, Confirm',
+                                            cancelButtonText: 'Cancel',
+                                            confirmButtonColor: '#d33',
+                                            cancelButtonColor: '#6c757d',
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                document.getElementById('cancel-form-' + appointmentId).submit();
+                                            }
+                                        });
+                                    }
+                                </script>
                             </div>
                         @empty
                         <div class="alert alert-info">
