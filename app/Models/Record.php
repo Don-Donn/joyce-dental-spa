@@ -50,5 +50,4 @@ class Record extends Model
             return null; // Or handle the error as needed
         }
     }
- 
 }

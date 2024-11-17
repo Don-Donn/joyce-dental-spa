@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Exception;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -65,6 +66,31 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Appointment::class, 'patient_id');
     }
+    public function dentalRecord () {
+        return $this->hasOne(DentalRecord::class, 'user_id');
+    }
+
+    public function hasFilled ($tn) {
+        $ss = $this->getStatus($tn);
+
+        return in_array("F", $ss);
+    }
+
+    public function getStatus ($tn) {
+        try {
+            $statuses = $this->dentalRecord
+                ->statuses()
+                ->whereToothNumber($tn)
+                ->get()
+                ->pluck('status')
+                ->all();
+
+            return $statuses;
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
     // Mutators to encrypt data when saving
     public function setPhoneAttribute($value)
     {
