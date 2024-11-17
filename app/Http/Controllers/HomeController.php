@@ -26,10 +26,6 @@ class HomeController extends Controller
         if (in_array(auth()->user()->type, ['Administrator', 'Staff'])) {
             return redirect('/admin');
         }
-
-        if (auth()->user()->type === 'Patient') {
-            return redirect('/patient'); // Redirect patients to a separate page
-        }
         return view('home');
     }
 }
