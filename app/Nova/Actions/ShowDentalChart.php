@@ -22,9 +22,9 @@ class ShowDentalChart extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {
-        $user = $models[0];
-        return Action::redirect("/dental-record/$user->id");
-    }
+        $user = $models->first(); // Safeguard for multiple models
+        return Action::redirect("/dental-record/{$user->id}");
+    }    
 
     /**
      * Get the fields available on the action.

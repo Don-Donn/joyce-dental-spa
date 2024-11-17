@@ -48,8 +48,17 @@ class DentitionStatus extends Resource
     {
         return [
             BelongsTo::make('Record', 'record', DentalRecord::class),
+            
             Select::make('Tooth Number', 'tooth_number')
-                ->options(ModelsDentitionStatus::toothNumber()),
+                ->options(function () use ($request) {
+                    // Fetch the record ID
+                    $recordId = $request->get('viaResourceId');
+                    
+                    // Get available tooth numbers for this record
+                    return ModelsDentitionStatus::availableToothNumbers($recordId);
+                })
+                ->rules('required'),
+    
             Select::make('Condition/Restoration/Surgery', 'status')
                 ->options([
                     'D' => 'D',
@@ -71,9 +80,11 @@ class DentitionStatus extends Resource
                     'XO' => 'XO',
                     'Cm' => 'Cm',
                     'Sp' => 'Sp',
-                ]),
+                ])
+                ->rules('required'),
         ];
     }
+    
 
     /**
      * Get the cards available for the request.

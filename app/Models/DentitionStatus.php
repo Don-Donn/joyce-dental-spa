@@ -75,4 +75,18 @@ class DentitionStatus extends Model
     public function record () {
         return $this->belongsTo(DentalRecord::class, 'record_id');
     }
+
+    public static function availableToothNumbers($recordId)
+    {
+        // Get all tooth numbers
+        $allToothNumbers = self::toothNumber();
+
+        // Get assigned tooth numbers for the specific record
+        $assignedToothNumbers = self::where('record_id', $recordId)
+            ->pluck('tooth_number')
+            ->toArray();
+
+        // Filter out the assigned tooth numbers
+        return array_diff($allToothNumbers, $assignedToothNumbers);
+    }
 }
