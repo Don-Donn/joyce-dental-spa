@@ -180,7 +180,8 @@ class PatientRecord extends Resource
             (new DownloadExcel())
                 ->canSee(fn () => auth()->user()->type == 'Administrator')
                 ->withHeadings(),
-            (new ShowDentalChart()),
+            (new ShowDentalChart())
+                ->canSee(fn () => auth()->user()->type == 'Administrator'),
         ];
     }
 }

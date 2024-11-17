@@ -15,6 +15,7 @@ use App\Nova\Actions\ChangeStatus;
 use App\Nova\Actions\SendReminder;
 use App\Nova\Filters\Slot;
 use App\Nova\Filters\Status;
+use App\Rules\ConflictAppointment;
 use Laraning\NovaTimeField\TimeField;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -92,7 +93,7 @@ class Appointment extends Resource
                     ->sortable(), // Keep dropdown on create only
 
             Select::make('Slot')
-                ->rules(['required'])
+                ->rules(['required',  new ConflictAppointment($request->date ?? $this->date, $this->id)])
                 ->options(\App\Models\Appointment::getSlots()),
             // TimeField::make('Start Time', 'time_start')->withTwelveHourTime()->required(),
             // TimeField::make('End Time', 'time_end')->withTwelveHourTime()->required(),

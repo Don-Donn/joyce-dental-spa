@@ -22,6 +22,11 @@ class DentalRecord extends Resource
      */
     public static $model = \App\Models\DentalRecord::class;
 
+    public function authorizedToDelete(Request $request)
+    {
+        return auth()->user()->type == 'Administrator';
+    }
+
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
