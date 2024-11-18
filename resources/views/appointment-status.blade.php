@@ -21,7 +21,7 @@ If you have any follow-up questions or need further assistance, please don’t h
 @if ($status == 'Rejected')
 We regret to inform you that your appointment request with {{nova_get_setting('doctor_name', 'Dr. Joyce Litan Iribani')}}  has been REJECTED due to scheduling conflicts.
 
-We apologize for any inconvenience this may cause. Please feel free to submit a new request for a different date or time, contact us at {{nova_get_setting('contact', '0917-505-3601')}} for assistance in selecting a new appointment time.
+We apologize for any inconvenience this may cause. Please feel free to SUBMIT A NEW REQUEST FOR A DIFFERENT TIME SLOT OR DATE, you may contact us at {{nova_get_setting('contact', '0917-505-3601')}} for assistance in selecting a new appointment time.
 @endif
 
 @if($status == 'Cancelled')
