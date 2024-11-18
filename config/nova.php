@@ -60,6 +60,13 @@ return [
 
     'path' => '/admin',
 
+    // Block "Patient" users from accessing Nova
+    'before' => function () {
+        if (Auth::check() && Auth::user()->type === 'Patient') {
+            abort(403); // Abort if user type is "Patient"
+        }
+    },
+    
     /*
     |--------------------------------------------------------------------------
     | Nova Authentication Guard

@@ -12,6 +12,45 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Admin Login Submission
+Route::post('/admin/login', function (Illuminate\Http\Request $request) {
+    $credentials = $request->only('email', 'password');
+
+    if (Auth::attempt($credentials)) {
+        if (Auth::user()->type === 'Patient') {
+            Auth::logout(); // Log out the user immediately
+            return back()->withErrors(['email' => 'Invalid User: This Page is Forbidden']);
+        }
+
+        // Redirect Admin or Staff to Nova Dashboard
+        return redirect('/admin/dashboards/main');
+    }
+
+    // If authentication fails
+    return back()->withErrors(['email' => 'The provided credentials do not match our records.']);
+})->name('nova.login');
+
+// Patient Login Submission
+Route::post('/login', function (Illuminate\Http\Request $request) {
+    $credentials = $request->only('email', 'password');
+
+    if (Auth::attempt($credentials)) {
+        // Check if the user type is NOT 'Patient' (Admin or Staff trying to log in)
+        if (Auth::user()->type === 'Administrator' || Auth::user()->type === 'Staff') {
+            Auth::logout(); // Log out the user immediately
+            return back()->withErrors(['email' => 'Invalid User']);
+        }
+
+        // Redirect Patient to the home page
+        return redirect('/');
+    }
+
+    // If authentication fails
+    return back()->withErrors(['email' => 'The provided credentials do not match our records.']);
+})->name('login');
+
+
+
 
 // Artisan helper (restricted to authenticated users for security)
 Route::get('/artisan', function () {

@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use App\Nova\Actions\ShowChart;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\HasOne;
@@ -125,6 +126,9 @@ class DentalRecord extends Resource
      */
     public function actions(Request $request)
     {
-        return [];
+        return [
+            (new ShowChart())
+            ->canSee(fn () => auth()->user()->type == 'Administrator'),
+        ];
     }
 }
