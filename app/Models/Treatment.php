@@ -20,6 +20,7 @@ class Treatment extends Model
         'doctor',
         'outcome',
         'notes',
+        
     ];
 
     protected $casts = [
