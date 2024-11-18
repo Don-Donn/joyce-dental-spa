@@ -34,7 +34,7 @@ class DentalRecord extends Resource
      */
     public function title () {
         $userName = $this->user->name;
-        return "$userName - Record";
+        return "$userName";
     }
 
     /**
@@ -55,7 +55,7 @@ class DentalRecord extends Resource
     public function fields(Request $request)
     {
         return [
-            BelongsTo::make('User', 'user', PatientRecord::class),
+            BelongsTo::make('Patient', 'user', PatientRecord::class),
             HasMany::make('Dentition Statuses', 'statuses', DentitionStatus::class),
             new Panel('Periodontal Screening', [
                 Boolean::make('Gingivitis'),
