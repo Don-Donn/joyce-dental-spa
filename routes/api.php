@@ -125,12 +125,3 @@ Route::get('/slots', function (Request $request) {
 });
 
 
-Route::get('/reminders', function () {
-    $app = Appointment::whereDate('date', today()->addDay(2))->get();
-    $app->load('patient');
-    foreach ($app as $a) {
-        Mail::to($a->patient->email)->send(new AppointmentReminder($a));
-    }
-
-    return 'ok!';
-});

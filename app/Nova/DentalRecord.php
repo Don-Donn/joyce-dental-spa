@@ -15,6 +15,18 @@ use Laravel\Nova\Panel;
 
 class DentalRecord extends Resource
 {
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        // Customize the search logic here
+        if ($request->get('search')) {
+            return $query->orWhereHas('user', function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->get('search') . '%');
+            });
+        }
+
+        return $query;
+    }
+
     public static $group = '1Patient Management';
     /**
      * The model the resource corresponds to.
