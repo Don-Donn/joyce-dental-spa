@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Observers\AppointmentObserver;
 
 class Appointment extends Model
 {
@@ -50,5 +51,11 @@ class Appointment extends Model
             '4:20 PM - 4:40 PM' => '4:20 PM - 4:40 PM',
             '4:40 PM - 5:00 PM' => '4:40 PM - 5:00 PM',
         ];
+    }
+
+    protected static function booted()
+    {
+        // This can be removed if registered in AppServiceProvider
+        static::observe(AppointmentObserver::class);
     }
 }
