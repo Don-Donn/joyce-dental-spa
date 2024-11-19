@@ -27,7 +27,7 @@ class DentitionStatus extends Resource
      *
      * @var string
      */
-    public static $title = 'tooth_number';
+    public static $title = 'patient_name';
 
     /**
      * The columns that should be searched.

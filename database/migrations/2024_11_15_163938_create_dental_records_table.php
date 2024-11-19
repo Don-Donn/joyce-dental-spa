@@ -15,24 +15,27 @@ class CreateDentalRecordsTable extends Migration
     {
         Schema::create('dental_records', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->boolean('gingivitis')->default(false);
-            $table->boolean('early')->default(false);
-            $table->boolean('moderate')->default(false);
-            $table->boolean('advance')->default(false);
-            $table->boolean('class')->default(false);
-            $table->boolean('overjet')->default(false);
-            $table->boolean('overbite')->default(false);
-            $table->boolean('midline')->default(false);
-            $table->boolean('crossbite')->default(false);
-            $table->boolean('ortho')->default(false);
-            $table->boolean('stay')->default(false);
-            $table->string('others')->nullable();
-            $table->boolean('clenching')->default(false);
-            $table->boolean('clicking')->default(false);
-            $table->boolean('tris')->default(false);
-            $table->boolean('muscle')->default(false);
+            $table->unsignedBigInteger('user_id');
+            $table->text('gingivitis')->nullable(); // Changed to TEXT for encryption
+            $table->text('early')->nullable();
+            $table->text('moderate')->nullable();
+            $table->text('advance')->nullable();
+            $table->text('class')->nullable();
+            $table->text('overjet')->nullable();
+            $table->text('overbite')->nullable();
+            $table->text('midline')->nullable();
+            $table->text('crossbite')->nullable();
+            $table->text('ortho')->nullable();
+            $table->text('stay')->nullable();
+            $table->text('others')->nullable(); // Changed to TEXT for encryption
+            $table->text('clenching')->nullable();
+            $table->text('clicking')->nullable();
+            $table->text('tris')->nullable();
+            $table->text('muscle')->nullable();
             $table->timestamps();
+
+            // Add a foreign key constraint for user_id
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
