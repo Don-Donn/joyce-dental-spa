@@ -13,14 +13,7 @@ class Treatment extends Model
         'patient_id',
         'type',
         'description',
-        'medication',
-        'dosage',
-        'start_date',
-        'end_date',
-        'doctor',
-        'outcome',
-        'notes',
-        
+        'notes',  
     ];
 
     protected $casts = [

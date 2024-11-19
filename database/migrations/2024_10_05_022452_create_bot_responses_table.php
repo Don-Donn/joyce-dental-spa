@@ -16,7 +16,6 @@ class CreateBotResponsesTable extends Migration
         Schema::create('bot_responses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('parent_id')->nullable();
-            $table->string('category');
             $table->text('question');
             $table->text('answer');
             $table->timestamps();

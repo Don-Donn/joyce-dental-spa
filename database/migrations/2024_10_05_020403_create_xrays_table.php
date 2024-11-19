@@ -17,11 +17,7 @@ class CreateXraysTable extends Migration
             $table->id();
             $table->foreignId('patient_id');
             $table->date('date');
-            $table->string('type');
-            $table->text('radiologist_report')->nullable();
             $table->text('findings')->nullable();
-            $table->text('diagnosis')->nullable();
-            $table->text('follow_up')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
         });

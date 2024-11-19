@@ -19,13 +19,6 @@ class CreateTreatmentsTable extends Migration
             $table->foreignIdFor(User::class, 'patient_id');
             $table->string('type');
             $table->text('description');
-            $table->text('medication');
-            $table->text('dosage');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->string('doctor');
-            $table->string('outcome');
-            $table->text('notes');
             $table->timestamps();
         });
     }

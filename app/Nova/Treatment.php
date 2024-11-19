@@ -56,7 +56,6 @@ class Treatment extends Resource
         'id',
         'type',
         'description',
-        'dosage',
         'notes',
     ];
 
@@ -90,12 +89,6 @@ class Treatment extends Resource
             Textarea::make('Description')
                 ->showOnIndex()
                 ->alwaysShow(),
-            Hidden::make('medication')->default(fn () => '----'),
-            Hidden::make('dosage')->default(fn () => '----'),
-            Hidden::make('start_date')->default(fn () => now()),
-            Hidden::make('end_date')->default(fn () => now()),
-            Hidden::make('doctor')->default(fn () => '---'),
-            Hidden::make('outcome')->default(fn () => '---'),
             Hidden::make('notes')->default(fn () => '---'),
         ];
     }

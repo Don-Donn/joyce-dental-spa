@@ -18,8 +18,8 @@ class AdminSeeder extends Seeder
     {
         $user = User::create([
             'name'=>'The Administrator',
-            'email'=>'root@yopmail.com',
-            'password'=> bcrypt('password')
+            'email'=>'hosting.dental@gmail.com',
+            'password'=> bcrypt('password!!')
         ]);
     }
 }
