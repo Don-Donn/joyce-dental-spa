@@ -99,8 +99,17 @@ class PatientRecord extends Resource
                 
             Password::make('Password')
                 ->onlyOnForms()
-                ->creationRules('required', 'string', 'min:8')
-                ->updateRules('nullable', 'string', 'min:8'),
+                ->creationRules('required', 'string', 'min:8', 'confirmed')
+                ->updateRules('nullable', 'string', 'min:8', 'confirmed'),
+            
+            Password::make('Confirm Password', 'password_confirmation')
+                ->onlyOnForms()
+                ->creationRules('required_with:password')
+                ->updateRules('nullable', 'same:password')
+                ->hideFromIndex()
+                ->fillUsing(function () {
+                    // No need to save this field to the database.
+                }),
 
             Select::make('Gender')
                 ->rules('required')

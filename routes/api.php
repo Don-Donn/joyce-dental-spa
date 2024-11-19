@@ -98,7 +98,7 @@ Route::get('/get-message', function (Request $request) {
             return $message;
         }
 
-        $message['message'] = $response->answer;
+        $message['message'] = nl2br($response->answer);
         $message['questions'] = BotResponse::whereParentId($response->id)->get()->pluck('question');
     }
 

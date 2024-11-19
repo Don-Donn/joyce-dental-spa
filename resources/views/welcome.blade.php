@@ -36,13 +36,13 @@
         <div class="announcement-board-wrapper shadow-sm">
             <div class="announcement-content" style="font-size: 30px;">
                 <span class="text">
-                    {{ nova_get_setting('announcement_board', 'No announcements at the moment.') }}
+                    {{ nova_get_setting('clinic_announcement', 'No announcements at the moment.') }}
                 </span>
                 <span class="text">
-                    {{ nova_get_setting('announcement_board', 'No announcements at the moment.') }}
+                    {{ nova_get_setting('clinic_announcement', 'No announcements at the moment.') }}
                 </span>
                 <span class="text">
-                    {{ nova_get_setting('announcement_board', 'No announcements at the moment.') }}
+                    {{ nova_get_setting('clinic_announcement', 'No announcements at the moment.') }}
                 </span>
             </div>
         </div>

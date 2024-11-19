@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\PatientLoginController;
+use App\Http\Controllers\AdminLoginController;
 use App\Models\Appointment;
 use App\Models\Service;
 use App\Models\User;
@@ -10,6 +12,19 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::post('/admin', [AdminLoginController::class, 'login'])->name('admin.login');
+Route::post('/login', [PatientLoginController::class, 'login'])->name('login');
+
+// Patient Routes
+Route::middleware('auth:patient')->group(function () {
+    Route::get('/home', [PatientLoginController::class, '/']); // Patient dashboard
+});
+
+// Admin Routes
+Route::middleware('auth:admin')->group(function () {
+    Route::get('/admin', [AdminLoginController::class, 'dashboards']); // Admin dashboard
 });
 
 // Admin Login Submission
