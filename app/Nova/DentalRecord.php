@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Filters\RecordAlphabetical;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use App\Nova\Actions\ShowChart;
@@ -116,7 +117,9 @@ class DentalRecord extends Resource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            new RecordAlphabetical,
+        ];
     }
 
     /**
