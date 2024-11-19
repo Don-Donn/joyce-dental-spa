@@ -43,7 +43,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 Tab::make('Clinic', [
                     Text::make('Dentist Name', 'doctor_name'),
                     Text::make('Clinic Name', 'clinic'),
-                    Textarea::make('Clinic Announcement', 'announcement_board'),
+                    Textarea::make('Clinic Announcement'),
                     Textarea::make('About'),
                     Text::make('Phone No.', 'contact'),
                 ]),
