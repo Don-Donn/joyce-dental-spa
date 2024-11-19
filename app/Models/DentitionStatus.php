@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 
 class DentitionStatus extends Model
 {
@@ -15,9 +16,11 @@ class DentitionStatus extends Model
         'record_id',
     ];
 
-    public static function toothNumber () {
+    // Static method to define tooth numbers
+    public static function toothNumber()
+    {
         return [
-        55 => 55,
+            55 => 55,
             54 => 54,
             53 => 53,
             52 => 52,
@@ -72,10 +75,19 @@ class DentitionStatus extends Model
         ];
     }
 
-    public function record () {
+    
+    public function getPatientNameAttribute()
+    {
+        return $this->record->user->name ?? 'Unknown Patient';
+    }
+
+    // Relationship with DentalRecord
+    public function record()
+    {
         return $this->belongsTo(DentalRecord::class, 'record_id');
     }
 
+    // Static method to get available tooth numbers for a specific record
     public static function availableToothNumbers($recordId)
     {
         // Get all tooth numbers
@@ -88,5 +100,22 @@ class DentitionStatus extends Model
 
         // Filter out the assigned tooth numbers
         return array_diff($allToothNumbers, $assignedToothNumbers);
+    }
+
+    // Mutator to encrypt the status field
+    public function setStatusAttribute($value)
+    {
+        $this->attributes['status'] = $value ? Crypt::encryptString($value) : null;
+    }
+
+    // Accessor to decrypt the status field
+    public function getStatusAttribute($value)
+    {
+        try {
+            return $value ? Crypt::decryptString($value) : null;
+        } catch (\Exception $e) {
+            \Log::error('Decryption error for status: ' . $e->getMessage());
+            return null; // Handle decryption errors gracefully
+        }
     }
 }
