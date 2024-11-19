@@ -89,7 +89,6 @@ class Treatment extends Resource
             Textarea::make('Description')
                 ->showOnIndex()
                 ->alwaysShow(),
-            Hidden::make('notes')->default(fn () => '---'),
         ];
     }
 
