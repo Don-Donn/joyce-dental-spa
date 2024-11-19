@@ -82,18 +82,9 @@ class Xray extends Resource
             : BelongsTo::make('Patient', 'patient', PatientRecord::class)
                 ->rules('required')
                 ->sortable(), // Keep dropdown on create only
-
-            Hidden::make('Type')->default(fn () => 'dental'),
-            // Textarea::make('Radiologist Report')
-            //     ->alwaysShow(),
             Textarea::make('Findings', 'findings')
                 ->showOnIndex()
                 ->alwaysShow(),
-            // Textarea::make('Diagnosis')
-            //     ->showOnIndex()
-            //     ->alwaysShow(),
-            // Textarea::make('Follow Up')
-            //     ->alwaysShow(),
             Image::make('Image')
                 ->rules('required'),
         ];
