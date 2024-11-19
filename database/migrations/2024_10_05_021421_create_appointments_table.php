@@ -17,8 +17,6 @@ class CreateAppointmentsTable extends Migration
             $table->id();
             $table->foreignId('patient_id');
             $table->date('date');
-            $table->string('time_start')->nullable();
-            $table->string('time_end')->nullable();
             $table->text('remarks')->nullable();
             $table->string('service')->nullable();
             $table->enum('status', ['Finished', 'For Approval', 'Approved', 'Rejected', 'Cancelled'])->default('For Approval');

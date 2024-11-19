@@ -13,11 +13,7 @@ class Xray extends Model
     protected $fillable = [
         'patient_id',
         'date',
-        'type',
-        'radiologist_report',
         'findings',
-        'diagnosis',
-        'follow_up',
         'image',
     ];
 
