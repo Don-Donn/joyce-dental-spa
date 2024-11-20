@@ -55,7 +55,6 @@ class Xray extends Resource
     public static $search = [
         'id',
         'date',
-        'type',
         'findings',
     ];
 

@@ -56,7 +56,6 @@ class Treatment extends Resource
         'id',
         'type',
         'description',
-        'notes',
     ];
 
     /**
