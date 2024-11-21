@@ -112,7 +112,7 @@ class Treatment extends Resource
     public function filters(Request $request)
     {
         return [
-            \App\Nova\Filters\Date::make(),
+            \App\Nova\Filters\TreatmentDate::make(),
         ];
     }
 
