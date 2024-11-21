@@ -5,13 +5,13 @@
     <link rel="stylesheet" href="{{ asset('css/announcement-board.css') }}">
 </head>
     <x-bot />
-    <div style="background:url('/clinic-bg.png'); background-size:cover; background-repeat: no-repeat;padding:7em 0px;">
+    <div style="background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('/clinic-bg.png'); background-size:cover; background-repeat: no-repeat; padding:7em 0px;">
         <div class="container row mx-auto align-items-center">
             <div class="p-4 col-md-6">
-                <h1 class="text-primary display-1" style="font-weight: 950; text-shadow:0px 0px 10px #fff;">
+                <h1 class="text-primary display-1 text-center" style="font-weight: 950; text-shadow:0px 0px 10px #fff;">
                     {{ nova_get_setting('name', 'JOYCE DENTAL SPA CLINIC') }}
                 </h1>
-                <h2 style="text-shadow: 0px 0px 8px #fff; color: black; font-weight: 500;" class="display-3">Your Smile Says It All</h2>
+                <h2 style="text-shadow: 0px 0px 8px #fff; color: black; font-weight: 500; font-size: 3.5rem;" class="display-3 text-center">Your Smile Says It All</h2>
                 <a class="btn btn-primary mt-4 btn-lg" href="/home">Book an Appointment!</a>
             </div>
             <div class="col-md-6">
@@ -47,8 +47,10 @@
             </div>
         </div>
 
+        <br><br>
+
         <h1 class="">About Us</h1>
-        <p class="fs-5 text-muted">
+        <p class="fs-5 text-muted" style="text-align: justify;">
             {{ nova_get_setting('about', '---') }}
         </p>
         <hr>

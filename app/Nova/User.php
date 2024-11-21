@@ -87,8 +87,25 @@ class User extends Resource
 
             Password::make('Password')
                 ->onlyOnForms()
-                ->creationRules('required', 'string', 'min:8', 'confirmed')
-                ->updateRules('nullable', 'string', 'min:8'),
+                ->creationRules(
+                    'required',
+                    'string',
+                    'min:8',
+                    'confirmed',
+                    'regex:/[A-Z]/', // At least one uppercase letter
+                    'regex:/[0-9]/', // At least one number
+                    'regex:/[\W_]/'  // At least one special character
+                )
+                ->updateRules(
+                    'nullable',
+                    'string',
+                    'min:8',
+                    'regex:/[A-Z]/', // At least one uppercase letter
+                    'regex:/[0-9]/', // At least one number
+                    'regex:/[\W_]/'  // At least one special character
+                )
+                ->help('Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.'),
+            
                 
             Password::make('Confirm Password', 'password_confirmation')
                 ->onlyOnForms()

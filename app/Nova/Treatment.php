@@ -88,7 +88,8 @@ class Treatment extends Resource
                 ->options(TreatmentType::get()->pluck('name', 'name')),
             Textarea::make('Description')
                 ->showOnIndex()
-                ->alwaysShow(),
+                ->alwaysShow()
+                ->rules('nullable'),
         ];
     }
 

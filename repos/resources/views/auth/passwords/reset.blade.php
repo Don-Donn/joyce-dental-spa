@@ -26,12 +26,29 @@
 
     <div class="mb-6 {{ $errors->has('password') ? ' has-error' : '' }}">
         <label class="block font-bold mb-2" for="password">{{ __('Password') }}</label>
-        <input class="form-control form-input form-input-bordered w-full" id="password" type="password" name="password" required>
+        <input 
+            class="form-control form-input form-input-bordered w-full" 
+            id="password" 
+            type="password" 
+            name="password" 
+            required 
+            pattern="(?=.*[A-Z])(?=.*[\W_])(?=.*\d.*\d).{8,}" 
+            title="Password must be at least 8 characters long, contain at least one uppercase letter, one special character, and at least two numbers."
+        >
+        <small class="text-gray-600">
+            Password must be at least 8 characters, include one uppercase letter, one special character, and at least two numbers.
+        </small>
     </div>
 
     <div class="mb-6 {{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
         <label class="block font-bold mb-2" for="password-confirm">{{ __('Confirm Password') }}</label>
-        <input class="form-control form-input form-input-bordered w-full" id="password-confirm" type="password" name="password_confirmation" required>
+        <input 
+            class="form-control form-input form-input-bordered w-full" 
+            id="password-confirm" 
+            type="password" 
+            name="password_confirmation" 
+            required
+        >
     </div>
 
     <button class="w-full btn btn-default btn-primary hover:bg-primary-dark" type="submit">
@@ -39,3 +56,4 @@
     </button>
 </form>
 @endsection
+

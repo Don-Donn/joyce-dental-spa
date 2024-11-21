@@ -77,7 +77,7 @@ class DentalRecord extends Resource
                 Boolean::make('Moderate Periodontitis', 'moderate'),
                 Boolean::make('Advanced Periodontitis', 'advance'),
             ]),
-            new Panel('Occulsion', [
+            new Panel('Occlusion', [
                 Boolean::make('Class (Molar)', 'class'),
                 Boolean::make('Overjet'),
                 Boolean::make('Overbite'),

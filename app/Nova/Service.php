@@ -55,7 +55,6 @@ class Service extends Resource
                 ->rules('required')    
                 ->alwaysShow(),
             Image::make('Image')
-                ->rules('required'),
         ];
     }
 

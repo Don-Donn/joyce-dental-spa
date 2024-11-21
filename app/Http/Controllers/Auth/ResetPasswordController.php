@@ -27,4 +27,21 @@ class ResetPasswordController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
+
+    protected function rules()
+    {
+        return [
+            'email' => 'required|email',
+            'password' => [
+                'required',
+                'string',
+                'min:8', // Minimum length of 8 characters
+                'regex:/[A-Z]/', // At least one uppercase letter
+                'regex:/[\W_]/', // At least one special character
+                'regex:/(\d.*\d)/', // At least two numbers
+                'confirmed', // Must match password_confirmation
+            ],
+        ];
+    }
+    
 }
