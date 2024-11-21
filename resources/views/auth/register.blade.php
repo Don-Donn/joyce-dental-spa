@@ -62,6 +62,24 @@
                             </div>
                         </div>
 
+                        <!-- Gender Field -->
+                        <div class="row mb-3">
+                            <label for="gender" class="col-md-4 col-form-label text-md-end">{{ __('Gender') }}</label>
+                            <div class="col-md-6">
+                                <select id="gender" class="form-control @error('gender') is-invalid @enderror" name="gender" required>
+                                    <option value="" disabled selected>Select your gender</option>
+                                    <option value="Male" {{ old('gender') == 'Male' ? 'selected' : '' }}>Male</option>
+                                    <option value="Female" {{ old('gender') == 'Female' ? 'selected' : '' }}>Female</option>
+                                    <option value="Other" {{ old('gender') == 'Other' ? 'selected' : '' }}>Other</option>
+                                </select>
+                                @error('gender')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
                         <!-- Birthday Field -->
                         <div class="row mb-3">
                             <label for="birthday" class="col-md-4 col-form-label text-md-end">{{ __('Birthday') }}</label>
@@ -79,12 +97,25 @@
                         <div class="row mb-3">
                             <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="Enter your password" required autocomplete="new-password">
+                                <input id="password" type="password" 
+                                    class="form-control @error('password') is-invalid @enderror" 
+                                    name="password" 
+                                    placeholder="Enter your password" 
+                                    required autocomplete="new-password"
+                                    pattern="(?=.*[A-Z])(?=.*[\W_]).{8,}" 
+                                    title="Password must be at least 8 characters long, contain at least one uppercase letter, one special character, and at least two numbers.">
+                                
+                                <!-- Error Message -->
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+
+                                <!-- Password Requirements Text -->
+                                <small class="form-text text-muted">
+                                    Password must be at least 8 characters long, contain at least one uppercase letter, one special character, and at least two numbers.
+                                </small>
                             </div>
                         </div>
 

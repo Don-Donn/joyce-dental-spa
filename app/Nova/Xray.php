@@ -85,7 +85,6 @@ class Xray extends Resource
                 ->showOnIndex()
                 ->alwaysShow(),
             Image::make('Image')
-                ->rules('required'),
         ];
     }
 
