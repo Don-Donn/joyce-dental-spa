@@ -56,6 +56,7 @@ class Treatment extends Resource
         'id',
         'type',
         'description',
+        'created_at',
     ];
 
     /**
