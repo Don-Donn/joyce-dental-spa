@@ -22,9 +22,12 @@ class SendAppointmentReminders extends Command
 
     public function handle()
     {
-        // Get appointments scheduled for tomorrow
-        $appointments = Appointment::whereDate('date', today()->addDay(1))->with('patient')->get();
-
+        // Get appointments scheduled for tomorrow with status 'Approved'
+        $appointments = Appointment::whereDate('date', today()->addDay(1))
+            ->where('status', 'Approved') // Filter for 'Approved' status
+            ->with('patient')
+            ->get();
+    
         // Loop through each appointment and send an email
         foreach ($appointments as $appointment) {
             try {
@@ -34,7 +37,8 @@ class SendAppointmentReminders extends Command
                 $this->error('Failed to send reminder to: ' . $appointment->patient->email . ' - ' . $e->getMessage());
             }
         }
-
+    
         $this->info('All reminders processed.');
     }
+    
 }
