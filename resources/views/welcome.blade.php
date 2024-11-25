@@ -34,15 +34,9 @@
     <div class="container py-4">
         <h1 class="text-center mb-2">Clinic Announcement</h1>
         <div class="announcement-board-wrapper shadow-sm">
-            <div class="announcement-content" style="font-size: 30px;">
+            <div class="announcement-content" style="font-size: 28px; text-align: center;">
                 <span class="text">
-                    {{ nova_get_setting('clinic_announcement', 'No announcements at the moment.') }}
-                </span>
-                <span class="text">
-                    {{ nova_get_setting('clinic_announcement', 'No announcements at the moment.') }}
-                </span>
-                <span class="text">
-                    {{ nova_get_setting('clinic_announcement', 'No announcements at the moment.') }}
+                    {!! nl2br(e(nova_get_setting('clinic_announcement', 'No announcements at the moment.'))) !!}
                 </span>
             </div>
         </div>
