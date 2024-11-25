@@ -7,7 +7,7 @@
     <x-bot />
     <div style="background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('/clinic-bg.png'); background-size:cover; background-repeat: no-repeat; padding:7em 0px;">
         <div class="container row mx-auto align-items-center">
-            <div class="p-4 col-md-6">
+            <div class="p-4 col-md-6" style="text-align: center;">
                 <h1 class="text-primary display-1 text-center" style="font-weight: 950; text-shadow:0px 0px 10px #fff;">
                     {{ nova_get_setting('name', 'JOYCE DENTAL SPA CLINIC') }}
                 </h1>
