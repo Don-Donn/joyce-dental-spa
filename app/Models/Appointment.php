@@ -53,7 +53,6 @@ class Appointment extends Model
 
     protected static function booted()
     {
-        // This can be removed if registered in AppServiceProvider
-        static::observe(AppointmentObserver::class);
+        //
     }
 }
