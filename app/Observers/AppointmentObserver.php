@@ -15,7 +15,14 @@ class AppointmentObserver
         // Notify administrators and staff
         $users = User::whereIn('type', ['Administrator', 'Staff'])->get();
         foreach ($users as $user) {
-            $user->notify(new NewAppointment($appointment));
+            // Check if a notification already exists
+            $exists = $user->notifications()
+                ->where('data->appointment_id', $appointment->id)
+                ->exists();
+    
+            if (!$exists) {
+                $user->notify(new NewAppointment($appointment));
+            }
         }
 
         DB::transaction(function () use ($appointment) {

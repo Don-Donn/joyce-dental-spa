@@ -69,7 +69,8 @@ class DentalRecord extends Resource
     public function fields(Request $request)
     {
         return [
-            BelongsTo::make('Patient', 'user', PatientRecord::class),
+            BelongsTo::make('Patient', 'user', PatientRecord::class)
+                ->readonly(),
             HasMany::make('Dentition Statuses', 'statuses', DentitionStatus::class),
             new Panel('Periodontal Screening', [
                 Boolean::make('Gingivitis'),
