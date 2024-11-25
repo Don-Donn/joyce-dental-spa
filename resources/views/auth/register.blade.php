@@ -41,7 +41,17 @@
                         <div class="row mb-3">
                             <label for="phone" class="col-md-4 col-form-label text-md-end">{{ __('Phone') }}</label>
                             <div class="col-md-6">
-                                <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" placeholder="Enter your phone number" value="{{ old('phone') }}" required>
+                                <input 
+                                    id="phone" 
+                                    type="text" 
+                                    class="form-control @error('phone') is-invalid @enderror" 
+                                    name="phone" 
+                                    placeholder="Enter your phone number" 
+                                    value="{{ old('phone') }}" 
+                                    required 
+                                    pattern="\d{11,}" 
+                                    title="The phone number must be at least 11 digits."
+                                >
                                 @error('phone')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -49,6 +59,7 @@
                                 @enderror
                             </div>
                         </div>
+
                         <!-- Address Field -->
                         <div class="row mb-3">
                             <label for="address" class="col-md-4 col-form-label text-md-end">{{ __('Address') }}</label>
@@ -84,7 +95,16 @@
                         <div class="row mb-3">
                             <label for="birthday" class="col-md-4 col-form-label text-md-end">{{ __('Birthday') }}</label>
                             <div class="col-md-6">
-                                <input id="birthday" type="date" class="form-control @error('birthday') is-invalid @enderror" name="birthday" placeholder="Select your birthday" value="{{ old('birthday') }}" required>
+                                <input
+                                    id="birthday"
+                                    type="date"
+                                    class="form-control @error('birthday') is-invalid @enderror"
+                                    name="birthday"
+                                    placeholder="Select your birthday"
+                                    value="{{ old('birthday') }}"
+                                    required
+                                    max="{{ now()->subYears(7)->toDateString() }}"
+                                >
                                 @error('birthday')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

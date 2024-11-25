@@ -79,7 +79,6 @@ class PatientRecord extends Resource
             Text::make('Name')
                 ->sortable()
                 ->rules('required', 'max:255')
-                ->readonly($request->isUpdateOrUpdateAttachedRequest())
                 ->withMeta(['extraAttributes' => [
                     'placeholder' => 'Enter patient FULL NAME'
                 ]]),
@@ -92,15 +91,28 @@ class PatientRecord extends Resource
                 ->updateRules('unique:users,email,{{resourceId}}'),
 
             Text::make('Phone')
-                ->rules('required'),
+                ->rules('required', 'regex:/^[0-9]{11}$/'),
 
             Text::make('Address')
                 ->rules('required'),
                 
             Password::make('Password')
                 ->onlyOnForms()
-                ->creationRules('required', 'string', 'min:8', 'confirmed')
-                ->updateRules('nullable', 'string', 'min:8', 'confirmed'),
+                ->creationRules(
+                    'required', 
+                    'string', 
+                    'min:8', 
+                    'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/', 
+                    'confirmed'
+                )
+                ->updateRules(
+                    'nullable', 
+                    'string', 
+                    'min:8', 
+                    'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/', 
+                    'confirmed'
+                )
+                ->help('Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one special character.'),
             
             Password::make('Confirm Password', 'password_confirmation')
                 ->onlyOnForms()
@@ -120,7 +132,8 @@ class PatientRecord extends Resource
                 ]),
 
             Date::make('Birth Date', 'birthday')
-                ->rules('required')
+                ->rules('required', 'date', 'before_or_equal:' . now()->subYears(7)->toDateString())
+                ->help('The user must be at least 7 years old.')
                 ->hideFromIndex(),
             (new Tabs('Records', [
                 new Tab('Appointments', [

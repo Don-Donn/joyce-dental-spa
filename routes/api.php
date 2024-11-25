@@ -107,21 +107,27 @@ Route::get('/get-message', function (Request $request) {
 
 
 Route::get('/fully-booked', function () {
-    return SlotCount::where('count', '>=', 21)->get()->pluck('date');
+    $totalSlotsPerDay = count(Appointment::getSlots()); // Dynamically count total slots (21 in this case)
+
+    // Fetch dates that are fully booked
+    return SlotCount::where('count', '>=', $totalSlotsPerDay)->pluck('date');
 });
+
 
 Route::get('/slots', function (Request $request) {
     $date = $request->date;
-    $exists = Appointment::whereDate('date', $date)->get()->pluck('slot')->toArray();
-    $slots = \App\Models\Appointment::getSlots();
-    $available = [];
-    foreach ($slots as $key => $value) {
-        if (! in_array($value, $exists)) {
-            array_push($available, $value);
-        }
-    }
 
-    return $available;
+    $bookedSlots = Appointment::whereDate('date', $date)
+        ->whereNotNull('slot') // Only consider valid slots
+        ->pluck('slot')
+        ->toArray();
+
+    $allSlots = Appointment::getSlots();
+
+    $availableSlots = array_filter($allSlots, function ($slot) use ($bookedSlots) {
+        return !in_array($slot, $bookedSlots);
+    });
+
+    return array_values($availableSlots);
 });
-
 
