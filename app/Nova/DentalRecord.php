@@ -10,6 +10,7 @@ use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
@@ -69,8 +70,16 @@ class DentalRecord extends Resource
     public function fields(Request $request)
     {
         return [
-            BelongsTo::make('Patient', 'user', PatientRecord::class)
-                ->readonly(),
+            $request->isUpdateOrUpdateAttachedRequest()
+            ? Text::make('Patient')
+                ->resolveUsing(function () {
+                    return $this->user ? $this->user->name : 'No patient assigned';
+                })
+                ->readonly()
+                ->sortable()
+            : BelongsTo::make('Patient', 'user', PatientRecord::class)
+                ->rules('required')
+                ->sortable(), // Keep dropdown on create only
             HasMany::make('Dentition Statuses', 'statuses', DentitionStatus::class),
             new Panel('Periodontal Screening', [
                 Boolean::make('Gingivitis'),
