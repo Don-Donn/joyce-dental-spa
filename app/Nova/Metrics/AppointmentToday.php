@@ -17,7 +17,9 @@ class AppointmentToday extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        $todayAppointments = Appointment::whereDate('date', Carbon::today())->count();
+        $todayAppointments = Appointment::whereDate('date', Carbon::today())
+        ->where('status', 'Approved')
+        ->count();
         return $this->result($todayAppointments);
     }
 
