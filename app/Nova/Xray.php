@@ -68,7 +68,9 @@ class Xray extends Resource
     {
         return [
             Date::make('Date')
-                ->rules('required')
+                ->rules(['required', 'date', 'before_or_equal:today'], [
+                    'before_or_equal' => 'Only today and previous dates are allowed.',
+                ])
                 ->sortable(),
             
             $request->isUpdateOrUpdateAttachedRequest()
