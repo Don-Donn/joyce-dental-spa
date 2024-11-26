@@ -59,7 +59,7 @@ class DentitionStatus extends Resource
                 })
                 ->rules('required'),
     
-            Select::make('Condition/Restoration/Surgery', 'status')
+            Select::make('Condition/Treatment', 'status')
                 ->options([
                     'D' => 'D',
                     'M' => 'M',
