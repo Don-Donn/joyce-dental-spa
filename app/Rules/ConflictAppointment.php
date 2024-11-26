@@ -35,6 +35,7 @@ class ConflictAppointment implements Rule
         // Check for conflicting appointments, excluding the current one if provided
         $exists = Appointment::where('slot', $value)
             ->whereDate('date', $this->date)
+            ->whereIn('status', ['For Approval', 'Approved']) // Only check these statuses
             ->when($this->appointmentId, function ($query) {
                 $query->where('id', '!=', $this->appointmentId); // Exclude the current appointment
             })
