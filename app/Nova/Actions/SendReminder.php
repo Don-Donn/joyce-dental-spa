@@ -24,6 +24,13 @@ class SendReminder extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {
+        $nonApprovedModels = $models->filter(fn($model) => $model->status !== 'Approved');
+
+        // If there are non-approved models, return a failure message
+        if ($nonApprovedModels->isNotEmpty()) {
+            return Action::danger('Action can only be perform on approved status.');
+        }
+
         foreach ($models as $model) {
             $email = $model->patient->email;
             Mail::to($email)->send(new AppointmentReminder($model));
@@ -40,3 +47,4 @@ class SendReminder extends Action
         return [];
     }
 }
+
