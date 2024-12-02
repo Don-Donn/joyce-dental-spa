@@ -32,49 +32,73 @@
                         @forelse (auth()->user()->appointments()->latest()->get() as $item)
                             <div class="card mt-4">
                                 <div class="card-header d-flex justify-content-between">
-                                    <div>{{$item->date->format('m/d/y')}}</div>
-                                    <div class="badge {{$item->status == 'For Approval' ? 'bg-secondary': ($item->status == 'Approved' ? 'bg-success': 'bg-warning')}}">
-                                        {{$item->status}}
+                                    <div>{{ $item->date->format('m/d/y') }}</div>
+                                    <div class="badge {{ $item->status == 'For Approval' ? 'bg-secondary' : ($item->status == 'Approved' ? 'bg-success' : 'bg-warning') }}">
+                                        {{ $item->status }}
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <h4>{{$item->service}}</h4>
-                                    <p>{{$item->slot}}</p>
+                                    <h4>{{ $item->service }}</h4>
+                                    <p>{{ $item->slot }}</p>
                                 </div>
-                                @if ($item->status == 'Approved')
+                                @if ($item->status == 'For Approval')
                                     <div class="card-footer">
-                                        <button class="btn btn-danger" onclick="confirmCancellation({{$item->id}})">CANCEL</button>
+                                        <button class="btn btn-danger" onclick="confirmCancellation({{ $item->id }})">CANCEL</button>
                                     </div>
 
-                                    <form id="cancel-form-{{$item->id}}" action="/cancel" method="POST" style="display: none;">
+                                    <form id="cancel-form-{{ $item->id }}" action="/cancel" method="POST" style="display: none;">
                                         @csrf
-                                        <input type="hidden" name="appointment_id" value="{{$item->id}}">
+                                        <input type="hidden" name="appointment_id" value="{{ $item->id }}">
                                     </form>
+                                @elseif ($item->status == 'Approved')
+                                    <div class="card-footer">
+                                        <button class="btn btn-warning" onclick="rescheduleAppointment()">Reschedule</button>
+                                    </div>
                                 @endif
-
-                                <script>
-                                    function confirmCancellation(appointmentId) {
-                                        Swal.fire({
-                                            icon: 'warning',
-                                            title: 'Confirm Cancellation',
-                                            text: 'Are you sure you want to cancel this appointment?',
-                                            showCancelButton: true,
-                                            confirmButtonText: 'Yes, Confirm',
-                                            cancelButtonText: 'Cancel',
-                                            confirmButtonColor: '#d33',
-                                            cancelButtonColor: '#6c757d',
-                                        }).then((result) => {
-                                            if (result.isConfirmed) {
-                                                document.getElementById('cancel-form-' + appointmentId).submit();
-                                            }
-                                        });
-                                    }
-                                </script>
                             </div>
+
+                            <script>
+                                function confirmCancellation(appointmentId) {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Confirm Cancellation',
+                                        text: 'Are you sure you want to cancel this appointment?',
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Yes, Confirm',
+                                        cancelButtonText: 'Cancel',
+                                        confirmButtonColor: '#d33',
+                                        cancelButtonColor: '#6c757d',
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            document.getElementById('cancel-form-' + appointmentId).submit();
+                                        }
+                                    });
+                                }
+
+                                function rescheduleAppointment() {
+                                    Swal.fire({
+                                        title: 'Reschedule Appointment',
+                                        html: `
+                                            <p>To reschedule your appointment, kindly call us at <strong>{{nova_get_setting('contact', '0917-505-3601')}}</strong> or message us with:</p>
+                                            <ul style="text-align: left;">
+                                                <li>Your full name and current approved appointment details.</li>
+                                                <li>The reason for rescheduling.</li>
+                                                <li>Your preferred new schedule (date and time slot).</li>
+                                            </ul>
+                                            <p class="mt-3" style="text-align: left; font-size: 14px; color: #dc3545;">
+                                                <strong>Note:</strong> Patients who call will be prioritized. If you choose to send only a text message, please wait for the staff's reply to confirm your rescheduling request.
+                                            </p>
+                                        `,
+                                        icon: 'info',
+                                        confirmButtonText: 'Close',
+                                        confirmButtonColor: '#6c757d',
+                                    });
+                                }
+                            </script>
                         @empty
-                        <div class="alert alert-info">
-                            No record found.
-                        </div>
+                            <div class="alert alert-info">
+                                No record found.
+                            </div>
                         @endforelse
                     </div>
                 </div>
