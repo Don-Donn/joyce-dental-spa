@@ -150,3 +150,19 @@ Route::post('/notifications/mark-all-as-read', function () {
     auth()->user()->unreadNotifications->markAsRead();
     return back();
 })->name('notifications.markAllAsRead')->middleware('auth');
+
+Route::get('/treatment-history/{user}', function (User $user) {
+    if (!$user->treatments()->exists()) {
+        return '<div class="alert alert-secondary text-center">No Treatment History Available</div>';
+    }
+
+    return view('treatment_history', ['user' => $user]);
+})->middleware(['auth']);
+
+Route::get('/x-ray/{user}', function (User $user) {
+    if (!$user->xrays()->exists()) {
+        alert()->error('No X-ray Records Found!');
+        return back();
+    }
+    return view('x_ray', compact('user')); // Pass the correct variable
+})->middleware(['auth']);

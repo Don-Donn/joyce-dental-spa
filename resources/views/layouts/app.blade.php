@@ -10,6 +10,12 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 
@@ -149,12 +155,17 @@
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->
                         @guest
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url('/#about-us') }}">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url('/#our-services') }}">Services</a>
+                            </li>
                             @if (Route::has('login'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                                 </li>
                             @endif
-
                             @if (Route::has('register'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
@@ -165,7 +176,19 @@
                                 <a class="nav-link" href="/">{{ __('Home') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" target="_blank" href="/dental-record/{{auth()->id()}}">{{ __('Dental Record') }}</a>
+                                <a class="nav-link" href="{{ url('/#about-us') }}">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url('/#our-services') }}">Services</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" target="_blank" href="/dental-record/{{ auth()->id() }}">{{ __('Dental Record') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" id="load-treatment-history">Treatment History</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/x-ray/{{ auth()->id() }}">X-ray</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/home">{{ __('Appointment') }}</a>
@@ -178,14 +201,12 @@
                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
-
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                                                document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
-
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
                                     </form>
@@ -196,7 +217,27 @@
                 </div>
             </div>
         </nav>
-
+        <!-- Modal for Treatment History -->
+        <div class="modal fade" id="treatmentHistoryModal" tabindex="-1" role="dialog" aria-labelledby="treatmentHistoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="treatmentHistoryModalLabel">Treatment History</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="treatment-history-content">
+                        <!-- The Treatment History content will load here -->
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- 2. Link VCalendar Javascript (Plugin automatically installed) -->
         <script src='https://unpkg.com/v-calendar'></script>
         <main>
@@ -204,6 +245,35 @@
         </main>
 
     </div>
+    <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const treatmentHistoryButton = document.getElementById('load-treatment-history');
+                const treatmentHistoryModal = new bootstrap.Modal(document.getElementById('treatmentHistoryModal'));
+
+                treatmentHistoryButton.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const url = '/treatment-history/{{ auth()->id() }}';
+
+                    // Show the modal
+                    treatmentHistoryModal.show();
+
+                    // Clear previous content and show the loading spinner
+                    const contentDiv = document.getElementById('treatment-history-content');
+                    contentDiv.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
+
+                    // Make AJAX request
+                    fetch(url)
+                        .then(response => response.text())
+                        .then(html => {
+                            contentDiv.innerHTML = html; // Load the fetched content into the modal
+                        })
+                        .catch(error => {
+                            contentDiv.innerHTML = '<div class="alert alert-danger">An error occurred while loading the treatment history.</div>';
+                            console.error('Error fetching treatment history:', error);
+                        });
+                });
+            });
+        </script>
 </body>
 
 </html>

@@ -43,26 +43,26 @@
 
         <br><br>
 
-        <h1 class="">About Us</h1>
+        <h1 id="about-us" class="">About Us</h1>
         <p class="fs-5 text-muted" style="text-align: justify;">
             {{ nova_get_setting('about', '---') }}
         </p>
         <hr>
 
-        <h1 class="">Our Services</h1>
+        <h1 id="our-services" class="">Our Services</h1>
         <div class="row g-2">
             @forelse (\App\Models\Service::get() as $item)
                 <div class="col-md-3">
-                    <div class="card">
-                        <img class="card-img-top" src="/storage/{{ $item->image }}" alt="Card image cap" style="width: 100%; height: 200px; object-fit: cover;">
+                    <!-- Make the entire card clickable -->
+                    <a href="/home?service={{ $item->name }}" class="card service-card text-decoration-none">
+                        <img class="card-img-top" src="/storage/{{ $item->image }}" alt="Card image cap">
                         <div class="card-body">
                             <h5>{{ $item->name }}</h5>
-                            <p>{{ \Str::limit($item->description, 100) }}</p>
-                            <a href="/home?service={{ $item->name }}" class="btn btn-primary">
-                                Book Now
-                            </a>
+                            <p class="service-description">
+                                {{ \Str::limit($item->description, 100) }}
+                            </p>
                         </div>
-                    </div>
+                    </a>
                 </div>
             @empty
                 <div class="alert alert-secondary">No Service Available</div>
