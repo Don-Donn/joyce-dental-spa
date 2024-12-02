@@ -127,7 +127,57 @@
             flex-wrap: wrap; /* flex-wrap */
             gap: 0.5rem; /* gap-2 */
             }
+            /* Pure CSS dropdown toggle with click */
+        /* Pure CSS dropdown toggle with click */
+        .pure-css-click-dropdown {
+            position: relative;
+        }
 
+        .pure-css-click-dropdown input[type="checkbox"] {
+            display: none;
+        }
+
+        .pure-css-click-dropdown input[type="checkbox"]:checked ~ .dropdown-menu {
+            display: block;
+        }
+
+        .pure-css-click-dropdown .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            z-index: 1000;
+            min-width: 150px;
+        }
+
+        .dropdown-menu .dropdown-item {
+            padding: 10px 15px;
+            display: block;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #f8f9fa;
+            color: #0056b3;
+        }
+
+        .pure-css-click-dropdown label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .pure-css-click-dropdown .dropdown-icon {
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .pure-css-click-dropdown input[type="checkbox"]:checked + label .dropdown-icon {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 
@@ -197,21 +247,29 @@
                                 <a class="nav-link" href="/faq">{{ __('FAQ') }}</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            <div class="pure-css-click-dropdown">
+                                <!-- Hidden checkbox for toggling -->
+                                <input type="checkbox" id="dropdownToggle" />
+                                <label for="dropdownToggle" class="nav-link">
                                     {{ Auth::user()->name }}
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                        onclick="event.preventDefault();
-                                                document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    <span class="dropdown-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                                        </svg>
+                                    </span>
+                                </label>
+
+                                <!-- Dropdown menu -->
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="margin: 0;">
                                         @csrf
+                                        <button type="submit" class="dropdown-item">
+                                            {{ __('Logout') }}
+                                        </button>
                                     </form>
                                 </div>
-                            </li>
+                            </div>
+                        </li>
                         @endguest
                     </ul>
                 </div>
